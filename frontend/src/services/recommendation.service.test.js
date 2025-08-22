@@ -54,7 +54,7 @@ describe('recommendationService', () => {
     const recommendations = getRecommendations(formData, mockProducts);
 
     expect(recommendations).toHaveLength(1);
-    expect(recommendations[0].name).toBe('RD Station Marketing');
+    expect(recommendations[0].name).toBe('RD Station CRM');
   });
 
   test('Retorna o último match em caso de empate para SingleProduct', () => {

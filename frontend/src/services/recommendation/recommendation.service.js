@@ -92,7 +92,7 @@ const getRecommendations = (
         ];
       }
     }
-    return null;
+    return [];
   }
 
   const results = scored
