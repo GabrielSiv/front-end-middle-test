@@ -1,29 +1,25 @@
-// Form.js
-
-import React, { useEffect } from 'react';
 import { Preferences, Features, RecommendationType } from './Fields';
 import { SubmitButton } from './SubmitButton';
 import useProducts from '../../hooks/useProducts';
 import useForm from '../../hooks/useForm';
-import useRecommendations from '../../hooks/useRecommendations';
 
-function Form() {
-  const { preferences, features, products } = useProducts();
+function Form({ onNewRecommendations }) {
+  const { preferences, features } = useProducts();
   const { formData, handleChange } = useForm({
     selectedPreferences: [],
     selectedFeatures: [],
     selectedRecommendationType: '',
   });
-
-  const { getRecommendations, recommendations } = useRecommendations(products);
+  const disabled =
+    (!formData.selectedPreferences.length &&
+      !formData.selectedFeatures.length) ||
+    formData.selectedRecommendationType === '';
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const dataRecommendations = getRecommendations(formData);
-
-    /**
-     * Defina aqui a lógica para atualizar as recomendações e passar para a lista de recomendações
-     */
+    if (!disabled) {
+      onNewRecommendations(formData);
+    }
   };
 
   return (
@@ -48,7 +44,7 @@ function Form() {
           handleChange('selectedRecommendationType', selected)
         }
       />
-      <SubmitButton text="Obter recomendação" />
+      <SubmitButton text="Obter recomendação" disabled={disabled} />
     </form>
   );
 }
