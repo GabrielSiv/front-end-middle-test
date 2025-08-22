@@ -1,0 +1,105 @@
+// getRecommendations.js
+import { extractStringsArray, tokens, scoreCalc } from './helpers';
+
+const DEFAULT_OPTIONS = {
+  weightPreference: 3,
+  weightFeature: 1,
+  weightCategory: 1,
+  minScoreToBeValid: 1,
+  maxResults: 2,
+  whitelist: ['AI', 'RD'],
+};
+
+const FILTERS_OPTIONS = {
+  preferences: 'preferences',
+  features: 'features',
+  category: 'category',
+};
+
+const tokenizeArray = (arr, opts) =>
+  new Set(arr.flatMap((s) => tokens(s, opts)));
+
+const getRecommendations = (
+  formData = {
+    selectedPreferences: [],
+    selectedFeatures: [],
+    selectedRecommendationType: 'SingleProduct',
+  },
+  products
+) => {
+  const list = Array.isArray(products)
+    ? products
+    : (products && products.products) || [];
+  const opts = Object.assign({}, DEFAULT_OPTIONS);
+  const mode = formData.selectedRecommendationType;
+  const maxResults = opts.maxResults;
+  const whitelist = opts.whitelist;
+  const userPrefs = Array.isArray(formData.selectedPreferences)
+    ? formData.selectedPreferences
+    : [];
+  const userFeats = Array.isArray(formData.selectedFeatures)
+    ? formData.selectedFeatures
+    : [];
+  const userPhrases = [...userPrefs, ...userFeats].map(String).filter(Boolean);
+  const userTokens = userPhrases.flatMap((p) =>
+    tokens(p, {
+      minLen: 3,
+      whitelist,
+    })
+  );
+  const userTokenSet = new Set(userTokens);
+
+  const productTokenEntries = list.map((p, idx) => {
+    const pPreferences = extractStringsArray(p, FILTERS_OPTIONS.preferences);
+    const pFeatures = extractStringsArray(p, FILTERS_OPTIONS.features);
+    const pCategory = extractStringsArray(p, FILTERS_OPTIONS.category);
+    const prefTokens = tokenizeArray(pPreferences, { minLen: 3, whitelist });
+    const featTokens = tokenizeArray(pFeatures, { minLen: 3, whitelist });
+    const catTokens = tokenizeArray(pCategory, { minLen: 3, whitelist });
+    return { product: p, prefTokens, featTokens, catTokens, idx };
+  });
+
+  const scored = productTokenEntries.map((entry) => {
+    const { score, matches } = scoreCalc(
+      entry,
+      opts,
+      FILTERS_OPTIONS,
+      userTokenSet
+    );
+    return { product: entry.product, score, matches, idx: entry.idx };
+  });
+
+  if (mode === 'SingleProduct') {
+    const maxScore = scored.length
+      ? Math.max(...scored.map((s) => s.score))
+      : -Infinity;
+    console.log(scored.length);
+    if (maxScore < opts.minScoreToBeValid) return null;
+
+    for (let i = scored.length - 1; i >= 0; i--) {
+      if (scored[i].score === maxScore) {
+        const p = scored[i].product;
+        return Object.assign({}, p, {
+          score: scored[i].score,
+          matches: scored[i].matches,
+        });
+      }
+    }
+    return null;
+  }
+
+  const results = scored
+    .filter((s) => s.score >= opts.minScoreToBeValid)
+    .sort((a, b) => {
+      if (b.score !== a.score) return b.score - a.score;
+      return a.idx - b.idx;
+    })
+    .slice(0, maxResults)
+    .map((s) =>
+      Object.assign({}, s.product, { score: s.score, matches: s.matches })
+    );
+
+  return results;
+};
+
+export { getRecommendations };

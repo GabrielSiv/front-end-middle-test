@@ -1,1 +1,2 @@
-export { getRecommendations } from './recommendation.service';
+import { getRecommendations } from './recommendation.service';
+export default getRecommendations;
