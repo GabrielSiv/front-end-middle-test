@@ -1,5 +1,10 @@
 // getRecommendations.js
-import { extractStringsArray, tokens, scoreCalc } from './helpers';
+import {
+  extractStringsArray,
+  tokens,
+  scoreCalc,
+  tokenizeArray,
+} from './helpers';
 
 const DEFAULT_OPTIONS = {
   weightPreference: 3,
@@ -15,9 +20,6 @@ const FILTERS_OPTIONS = {
   features: 'features',
   category: 'category',
 };
-
-const tokenizeArray = (arr, opts) =>
-  new Set(arr.flatMap((s) => tokens(s, opts)));
 
 const getRecommendations = (
   formData = {
