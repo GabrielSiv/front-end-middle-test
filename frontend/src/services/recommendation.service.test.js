@@ -1,4 +1,4 @@
-import recommendationService from './recommendation.service';
+import getRecommendations from './recommendation';
 import mockProducts from '../mocks/mockProducts';
 
 describe('recommendationService', () => {
@@ -9,10 +9,7 @@ describe('recommendationService', () => {
       selectedRecommendationType: 'SingleProduct',
     };
 
-    const recommendations = recommendationService.getRecommendations(
-      formData,
-      mockProducts
-    );
+    const recommendations = getRecommendations(formData, mockProducts);
 
     expect(recommendations).toHaveLength(1);
     expect(recommendations[0].name).toBe('RD Conversas');
@@ -32,10 +29,7 @@ describe('recommendationService', () => {
       selectedRecommendationType: 'MultipleProducts',
     };
 
-    const recommendations = recommendationService.getRecommendations(
-      formData,
-      mockProducts
-    );
+    const recommendations = getRecommendations(formData, mockProducts);
 
     expect(recommendations).toHaveLength(2);
     expect(recommendations.map((product) => product.name)).toEqual([
@@ -57,10 +51,7 @@ describe('recommendationService', () => {
       selectedRecommendationType: 'SingleProduct',
     };
 
-    const recommendations = recommendationService.getRecommendations(
-      formData,
-      mockProducts
-    );
+    const recommendations = getRecommendations(formData, mockProducts);
 
     expect(recommendations).toHaveLength(1);
     expect(recommendations[0].name).toBe('RD Station Marketing');
@@ -68,14 +59,14 @@ describe('recommendationService', () => {
 
   test('Retorna o último match em caso de empate para SingleProduct', () => {
     const formData = {
-      selectedPreferences: ['Automação de marketing', 'Integração com chatbots'],
+      selectedPreferences: [
+        'Automação de marketing',
+        'Integração com chatbots',
+      ],
       selectedRecommendationType: 'SingleProduct',
     };
 
-    const recommendations = recommendationService.getRecommendations(
-      formData,
-      mockProducts
-    );
+    const recommendations = getRecommendations(formData, mockProducts);
 
     expect(recommendations).toHaveLength(1);
     expect(recommendations[0].name).toBe('RD Conversas');
