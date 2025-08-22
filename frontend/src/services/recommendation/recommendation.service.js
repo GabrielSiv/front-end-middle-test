@@ -27,12 +27,15 @@ const getRecommendations = (
     selectedFeatures: [],
     selectedRecommendationType: 'SingleProduct',
   },
-  products
+  products,
+  options,
+  filtersOptions
 ) => {
   const list = Array.isArray(products)
     ? products
     : (products && products.products) || [];
-  const opts = Object.assign({}, DEFAULT_OPTIONS);
+  const opts = Object.assign({}, options ?? DEFAULT_OPTIONS);
+  const filtersOpts = filtersOptions ?? FILTERS_OPTIONS;
   const mode = formData.selectedRecommendationType;
   const maxResults = opts.maxResults;
   const whitelist = opts.whitelist;
@@ -56,9 +59,9 @@ const getRecommendations = (
   const userTokenSet = new Set(userTokens);
 
   const productTokenEntries = list.map((p, idx) => {
-    const pPreferences = extractStringsArray(p, FILTERS_OPTIONS.preferences);
-    const pFeatures = extractStringsArray(p, FILTERS_OPTIONS.features);
-    const pCategory = extractStringsArray(p, FILTERS_OPTIONS.category);
+    const pPreferences = extractStringsArray(p, filtersOpts.preferences);
+    const pFeatures = extractStringsArray(p, filtersOpts.features);
+    const pCategory = extractStringsArray(p, filtersOpts.category);
     const prefTokens = tokenizeArray(pPreferences, { minLen: 3, whitelist });
     const featTokens = tokenizeArray(pFeatures, { minLen: 3, whitelist });
     const catTokens = tokenizeArray(pCategory, { minLen: 3, whitelist });
@@ -69,7 +72,7 @@ const getRecommendations = (
     const { score, matches } = scoreCalc(
       entry,
       opts,
-      FILTERS_OPTIONS,
+      filtersOpts,
       userTokenSet
     );
     return { product: entry.product, score, matches, idx: entry.idx };
