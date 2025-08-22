@@ -39,16 +39,20 @@ const getRecommendations = (
   const userPrefs = Array.isArray(formData.selectedPreferences)
     ? formData.selectedPreferences
     : [];
+
   const userFeats = Array.isArray(formData.selectedFeatures)
     ? formData.selectedFeatures
     : [];
+
   const userPhrases = [...userPrefs, ...userFeats].map(String).filter(Boolean);
+
   const userTokens = userPhrases.flatMap((p) =>
     tokens(p, {
       minLen: 3,
       whitelist,
     })
   );
+
   const userTokenSet = new Set(userTokens);
 
   const productTokenEntries = list.map((p, idx) => {
@@ -75,7 +79,6 @@ const getRecommendations = (
     const maxScore = scored.length
       ? Math.max(...scored.map((s) => s.score))
       : -Infinity;
-    console.log(scored.length);
     if (maxScore < opts.minScoreToBeValid) return null;
 
     for (let i = scored.length - 1; i >= 0; i--) {
