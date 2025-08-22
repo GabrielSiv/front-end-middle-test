@@ -84,10 +84,12 @@ const getRecommendations = (
     for (let i = scored.length - 1; i >= 0; i--) {
       if (scored[i].score === maxScore) {
         const p = scored[i].product;
-        return Object.assign({}, p, {
-          score: scored[i].score,
-          matches: scored[i].matches,
-        });
+        return [
+          Object.assign({}, p, {
+            score: scored[i].score,
+            matches: scored[i].matches,
+          }),
+        ];
       }
     }
     return null;
