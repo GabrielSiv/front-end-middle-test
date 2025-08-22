@@ -12,7 +12,6 @@ function App() {
     const newRecs = getRecommendations(formData);
     setRecommendations(newRecs);
   };
-  console.log(recommendations);
   return (
     <div className="bg-gray-100 min-h-screen flex flex-col justify-center items-center">
       <h1 className="text-3xl font-bold mb-8">
