@@ -1,4 +1,3 @@
-// getRecommendations.js
 import {
   extractStringsArray,
   tokens,
@@ -82,7 +81,7 @@ const getRecommendations = (
     const maxScore = scored.length
       ? Math.max(...scored.map((s) => s.score))
       : -Infinity;
-    if (maxScore < opts.minScoreToBeValid) return null;
+    if (maxScore < opts.minScoreToBeValid) return [];
 
     for (let i = scored.length - 1; i >= 0; i--) {
       if (scored[i].score === maxScore) {
