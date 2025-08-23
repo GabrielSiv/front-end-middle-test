@@ -27,14 +27,13 @@ const getRecommendations = (
     selectedRecommendationType: 'SingleProduct',
   },
   products,
-  options,
-  filtersOptions
+  options
 ) => {
   const list = Array.isArray(products)
     ? products
     : (products && products.products) || [];
   const opts = Object.assign({}, options ?? DEFAULT_OPTIONS);
-  const filtersOpts = filtersOptions ?? FILTERS_OPTIONS;
+  const filtersOpts = FILTERS_OPTIONS;
   const mode = formData.selectedRecommendationType;
   const maxResults = opts.maxResults;
   const whitelist = opts.whitelist;
