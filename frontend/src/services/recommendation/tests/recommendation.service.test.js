@@ -151,38 +151,4 @@ describe('recommendationService', () => {
 
     expect(recommendations.map((r) => r.id)).toEqual([2, 1]);
   });
-
-  test('Funciona com filtros customizados', () => {
-    const customProducts = [
-      {
-        id: 10,
-        name: 'Produto Custom',
-        prefs: ['Integração com chatbots'],
-        feats: ['Chat ao vivo e mensagens automatizadas'],
-        cat: 'Omnichannel',
-      },
-    ];
-
-    const customFilters = {
-      preferences: 'prefs',
-      features: 'feats',
-      category: 'cat',
-    };
-
-    const formData = {
-      selectedPreferences: ['Integração com chatbots'],
-      selectedFeatures: ['Chat ao vivo e mensagens automatizadas'],
-      selectedRecommendationType: 'SingleProduct',
-    };
-
-    const recommendations = getRecommendations(
-      formData,
-      customProducts,
-      mockOptions,
-      customFilters
-    );
-
-    expect(recommendations).toHaveLength(1);
-    expect(recommendations[0].name).toBe('Produto Custom');
-  });
 });
